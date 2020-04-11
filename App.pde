@@ -1,4 +1,4 @@
-
+// App class. Contains all UI Pages
 
 class App {
   

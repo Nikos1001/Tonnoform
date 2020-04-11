@@ -1,4 +1,5 @@
-
+// Instrument class. Holds data about instruments
+// Voice class. Plays a single note.
 
 class Instrument {
     
