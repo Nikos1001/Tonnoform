@@ -20,7 +20,7 @@ void setup() {
   textSize(18);
   noSmooth();
   size(1000, 600);
-  surface.setTitle("Hello World!");
+  surface.setTitle("Tonnoform");
   surface.setResizable(true);
   minim = new Minim(this);
   audioOut = minim.getLineOut();
