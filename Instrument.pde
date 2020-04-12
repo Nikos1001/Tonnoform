@@ -10,9 +10,10 @@ class Instrument {
   float volume = 0.5;
   float lowpass = 1;
   float hue = 50;
-  float decayTime;
+  float decayTime = 0.5;
+  float noisePitch = 0.5;
   
-  public final String[] waveformNames = {"SQR", "SIN", "TRI", "SAW"};
+  public final String[] waveformNames = {"SQR", "SIN", "TRI", "SAW", "NOISE"};
   public final int points = 10;
   
   public final float sliderPanelWidth = 200;
@@ -73,12 +74,17 @@ class Instrument {
     
     waveform = round((waveformNames.length - 1) * slider(0, "Waveform " + waveformNames[waveform], (float)waveform / (waveformNames.length - 1)));
     volume = slider(1, "Volume " + str(floor(volume * 100)) + "%", volume);
-    String lowpassMsg = "Low Pass";
-    if(lowpass > 0.95) lowpassMsg += " OFF";
-    else lowpassMsg += " " + str(floor(getLowPassFreq()));
-    lowpass = slider(2, lowpassMsg, lowpass);
+    if(waveform != 4) {
+      String lowpassMsg = "Low Pass";
+      if(lowpass > 0.95) lowpassMsg += " OFF";
+      else lowpassMsg += " " + str(floor(getLowPassFreq()));
+      lowpass = slider(2, lowpassMsg, lowpass);
+    }
     decayTime = slider(3, "Decay Speed " + str((float)floor(2000 * decayTime) / 100), decayTime);
     hue = map(slider(4, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
+    if(waveform == 4) {
+      noisePitch = slider(2, "Noise Pitch " + str((float)floor(noisePitch * 100) / 100), noisePitch);
+    }
     
     // Envelope
     
@@ -174,7 +180,8 @@ class Instrument {
     result += str(volume) + ",";
     result += str(lowpass) + ",";
     result += str(hue) + ",";
-    result += str(decayTime);
+    result += str(decayTime) + ",";
+    result += str(noisePitch);
     return result;
   }
   
@@ -189,6 +196,7 @@ class Instrument {
     lowpass = float(parts[envelope.length + 3]);
     hue = float(parts[envelope.length + 4]);
     decayTime = float(parts[envelope.length + 5]);
+    noisePitch = float(parts[envelope.length + 6]);
   }
   
   void stopAll() {
@@ -211,22 +219,35 @@ class Voice {
   float maxTime;
   Note n;
   
+  Noise noise;
+  Multiplier mult;
+  BitCrush bitCrush;
+  boolean useNoise;
+  
   float lpfFreq;
   boolean useLpf;
   
-  public final Waveform[] waves = {Waves.SQUARE, Waves.SINE, Waves.TRIANGLE, Waves.SAW};
+  public final Waveform[] waves = {Waves.SQUARE, Waves.SINE, Waves.TRIANGLE, Waves.SAW, null};
   
   Voice(Instrument inst, Note n) {
     this.n = n;
     this.inst = inst;
-    osc = new Oscil(440 * pow(2, (float)n.note / 12), 1, waves[inst.waveform]);
-    lpfFreq = inst.getLowPassFreq();
-    lpf = new LowPassFS(lpfFreq, audioOut.sampleRate());
-    if(inst.lowpass > 0.95) {
-      osc.patch(audioOut);
+    if(inst.waveform != 4) {
+      osc = new Oscil(440 * pow(2, (float)n.note / 12), 1, waves[inst.waveform]);
+      lpfFreq = inst.getLowPassFreq();
+      lpf = new LowPassFS(lpfFreq, audioOut.sampleRate());
+      if(inst.lowpass > 0.95) {
+        osc.patch(audioOut);
+      } else {
+        osc.patch(lpf).patch(audioOut);
+        useLpf = true;
+      }
     } else {
-      osc.patch(lpf).patch(audioOut);
-      useLpf = true;
+      useNoise = true;
+      noise = new Noise();
+      mult = new Multiplier();
+      bitCrush = new BitCrush(1, audioOut.sampleRate() * inst.noisePitch);
+      noise.patch(bitCrush).patch(mult).patch(audioOut);
     }
     timer = MIDIPage.beatLength * (n.endTime - n.startTime);
     maxTime = timer;
@@ -234,17 +255,27 @@ class Voice {
   
   void update() {
     timer -= delta;
-    osc.setWaveform(waves[inst.waveform]);
-    osc.setAmplitude(inst.getVol(maxTime - timer));
+    if(!useNoise) {
+      if(inst.waveform != 4) osc.setWaveform(waves[inst.waveform]);
+      osc.setAmplitude(inst.getVol(maxTime - timer));
+    } else {
+      mult.setValue(inst.getVol(maxTime - timer));
+    }
     if(n.deleted) timer = -100;
   }
   
   void delete() {
     n.playing = false;
-    if(!useLpf) {
-      osc.unpatch(audioOut);
+    if(!useNoise) {
+      if(!useLpf) {
+        osc.unpatch(audioOut);
+      } else {
+        lpf.unpatch(audioOut);
+      }
     } else {
-      lpf.unpatch(audioOut);
+      noise.unpatch(bitCrush);
+      bitCrush.unpatch(mult);
+      mult.unpatch(audioOut);
     }
   }
   
