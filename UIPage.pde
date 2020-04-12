@@ -36,4 +36,13 @@ abstract class UIPage {
     
   }
   
+  ArrayList<String> getData() {
+    ArrayList<String> data = new ArrayList<String>();
+    return data;
+  }
+  
+  void load(ArrayList<String> data) {
+  
+  }
+  
 }

@@ -26,10 +26,12 @@ class App {
     PFont font = createFont("assets/font2.ttf", 12);
     textFont(font);
     
-    pages = new UIPage[2];
-    pages[0] = new MIDIPage();
+    pages = new UIPage[3];
+    projPage = new ProjectPage();
+    pages[0] = projPage;
+    pages[1] = new MIDIPage();
     instPage = new InstrumentPage();
-    pages[1] = instPage;
+    pages[2] = instPage;
   }
   
   void display() {
@@ -119,6 +121,37 @@ class App {
       if(mouseX < width - inspectorWidth) {
         pages[selectedPage].drag(mouseX, mouseY - navigationBarHeight, width - inspectorWidth, height - navigationBarHeight);
       }
+    }
+  }
+  
+  void save(String path) {
+    println(path);
+    ArrayList<String> data = new ArrayList<String>();
+    for(int i = 0; i < pages.length; i ++) {
+      ArrayList<String> pageData = pages[i].getData();
+      for(String line : pageData) data.add(line);
+      data.add("===");
+    }
+    String[] fileDat = new String[data.size()];
+    for(int i = 0; i < fileDat.length; i ++) {
+      fileDat[i] = data.get(i);
+    }
+    saveStrings(dataPath(path + ".tnfproj"), fileDat);
+  }
+  
+  void load(String path) {
+    println(path);
+    String[] data = loadStrings(dataPath(path));
+    int index = 0;
+    for(int i = 0; i < pages.length; i ++) {
+      ArrayList<String> pageData = new ArrayList<String>();
+      while(!data[index].equals("===")) {
+        pageData.add(data[index]);
+        index ++;
+      }
+      index ++;
+      
+      pages[i].load(pageData);
     }
   }
   

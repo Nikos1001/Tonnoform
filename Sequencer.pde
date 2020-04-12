@@ -104,10 +104,8 @@ class Sequencer {
   }
   
   void update() {
-    time += delta;
-    if (this.isPaused) {
-      time = 0;
-      return; 
+    if (!isPaused) {
+      time += delta;
     }
     for(int i = patterns.size() - 1; i >= 0; i --) {
       if(patterns.get(i).shouldRemove()) patterns.remove(i);
@@ -134,6 +132,20 @@ class Sequencer {
    this.isPaused = !this.isPaused; 
   }
   
+  ArrayList<String> getData() {
+    ArrayList<String> result = new ArrayList<String>();
+    for(SequencePattern p : patterns) result.add(p.toString());
+    return result;
+  }
+  
+  void load(ArrayList<String> data) {
+    patterns = new ArrayList<SequencePattern>();
+    for(String line : data) {
+      SequencePattern pattern = new SequencePattern(line, midi);
+      patterns.add(pattern);
+    }
+  }
+  
 }
 
 
@@ -144,6 +156,15 @@ class SequencePattern {
   Pattern p;
   int time;
   int y;
+  
+  SequencePattern(String line, MIDIPage midi) {
+    String[] parts = line.split(",");
+    p = midi.patterns.get(int(parts[0]));
+    instID = int(parts[1]);
+    instName = parts[2];
+    time = int(parts[3]);
+    y = int(parts[4]);
+  }
   
   SequencePattern(Pattern p, int t, int y, int instID) {
     this.p = p;
@@ -166,6 +187,10 @@ class SequencePattern {
   
   Instrument getInst() {
     return instPage.instruments.get(instID);
+  }
+  
+  String toString() {
+    return str(p.index) + "," + str(instID) + "," + instName + "," + str(time) + "," + str(y);
   }
   
 }

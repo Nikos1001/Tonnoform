@@ -135,13 +135,53 @@ class MIDIPage extends UIPage {
     if(patterns.size() > 0) {
       patterns.get(selectedPattern).keyDown();
     }
-    if(key == ' ') this.seq.togglePause();
+    if(key == ' ') seq.togglePause();
     if(key == 's') scroll ++;
     if(key == 'w') scroll --;
   }
 
   void update() {
+    for(int i = 0; i < patterns.size(); i ++) {
+      patterns.get(i).index = i;
+    }
     seq.update();
+  }
+  
+  ArrayList<String> getData() {
+    ArrayList<String> data = new ArrayList<String>();
+    data.add(str(patternID));
+    for(Pattern p : patterns) {
+      data.add(p.toString());
+    }
+    data.add("==");
+    for(String line : seq.getData()) {
+      data.add(line);
+    }
+    return data;
+  }
+  
+  void load(ArrayList<String> data) {
+    ArrayList<String> mainDat = new ArrayList<String>(), seqDat = new ArrayList<String>();
+    boolean main = true;
+    for(int i = 0; i < data.size(); i ++) {
+      if(data.get(i).equals("==")) {
+        main = false;
+      } else {
+        if(main) mainDat.add(data.get(i));
+        else seqDat.add(data.get(i));
+      }
+    }
+    
+    // Main data
+    patternID = int(mainDat.get(0));
+    patterns = new ArrayList<Pattern>();
+    for(int i = 1; i < mainDat.size(); i ++) {
+      Pattern p = new Pattern("");
+      p.load(mainDat.get(i));
+      patterns.add(p);
+    }
+    
+    seq.load(seqDat);
   }
 
 }
@@ -155,6 +195,8 @@ class Pattern {
   Note currentNote;
   int pivotTime;
   int id;
+  
+  int index;
   
   int panY = 0;
   
@@ -303,6 +345,23 @@ class Pattern {
     return result;
   }
   
+  public String toString() {
+    String result = name + "/";
+    for(Note n : notes) result += n.toString() + "/";
+    return result;
+  }
+  
+  void load(String str) {
+    String[] parts = str.split("/");
+    for(String part : parts) println(part);
+    name = parts[0];
+    for(int i = 1; i < parts.length; i ++) {
+      String[] values = parts[i].split(",");
+      Note n = new Note(int(values[0]), int(values[1]), int(values[2]));
+      notes.add(n);
+    }
+  }
+  
 }
 
 
@@ -322,7 +381,7 @@ class Note {
   }
   
   public String toString() {
-    return "Note " + Integer.toString(this.note);
+    return str(startTime) + "," +  str(endTime) + "," + str(note);
   }
   
 }

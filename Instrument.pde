@@ -162,6 +162,31 @@ class Instrument {
     return c;
   }
   
+  String toString() {
+    String result = name;
+    result += ",";
+    for(int i = 0; i < envelope.length; i ++) {
+      result += str(envelope[i]) + ",";
+    }
+    result += str(waveform) + ",";
+    result += str(volume) + ",";
+    result += str(lowpass) + ",";
+    result += str(hue);
+    return result;
+  }
+  
+  void load(String data) {
+    String[] parts = data.split(",");
+    name = parts[0];
+    for(int i = 0; i < envelope.length; i ++) {
+      envelope[i] = float(parts[i + 1]);
+    }
+    waveform = int(parts[envelope.length + 1]);
+    volume = float(parts[envelope.length + 2]);
+    lowpass = float(parts[envelope.length + 3]);
+    hue = float(parts[envelope.length + 4]);
+  }
+  
 }
 
 

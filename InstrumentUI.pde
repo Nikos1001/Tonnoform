@@ -121,4 +121,21 @@ class InstrumentPage extends UIPage {
     }
   }
   
+  ArrayList<String> getData() {
+    ArrayList<String> result = new ArrayList<String>();
+    result.add(str(instrumentID));
+    for(Instrument inst : instruments) result.add(inst.toString());
+    return result;
+  }
+  
+  void load(ArrayList<String> data) {
+    instrumentID = int(data.get(0));
+    instruments = new ArrayList<Instrument>();
+    for(int i = 1; i < data.size(); i ++) {
+      Instrument inst = new Instrument("");
+      inst.load(data.get(i));
+      instruments.add(inst);
+    }
+  }
+  
 }

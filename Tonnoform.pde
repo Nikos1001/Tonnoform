@@ -11,6 +11,7 @@ Minim minim;
 AudioOutput audioOut;
 App app;
 
+ProjectPage projPage;
 InstrumentPage instPage;
 
 float ptime = 0;
