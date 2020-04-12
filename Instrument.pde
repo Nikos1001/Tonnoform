@@ -242,12 +242,14 @@ class Voice {
         osc.patch(lpf).patch(audioOut);
         useLpf = true;
       }
+      osc.setAmplitude(inst.getVol(0));
     } else {
       useNoise = true;
       noise = new Noise();
       mult = new Multiplier();
       bitCrush = new BitCrush(1, audioOut.sampleRate() * inst.noisePitch);
       noise.patch(bitCrush).patch(mult).patch(audioOut);
+      mult.setValue(inst.getVol(0));
     }
     timer = MIDIPage.beatLength * (n.endTime - n.startTime);
     maxTime = timer;

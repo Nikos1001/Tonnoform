@@ -108,25 +108,21 @@ class Sequencer {
   }
   
   void update() {
-    if (!isPaused) {
-      time += delta;
-    }
-    for(int i = patterns.size() - 1; i >= 0; i --) {
-      if(patterns.get(i).shouldRemove()) patterns.remove(i);
-    }
     
     float patternDuration = (midi.beatLength * midi.bars * midi.npb);
     int currentPatternTime = floor(time / patternDuration);
     int currentBeat = floor((time % patternDuration) / midi.beatLength);
     
-    int maxTime = -999;
-    for(SequencePattern p : patterns) {
-      if(p.time == currentPatternTime) {
-        ArrayList<Note> notes = p.p.getNotesAt(currentBeat);
-        for(Note n : notes) {
-          p.getInst().playNote(n);
+    if (!isPaused) {
+      time += delta;
+      int maxTime = -999;
+      for(SequencePattern p : patterns) {
+        if(p.time == currentPatternTime) {
+          ArrayList<Note> notes = p.p.getNotesAt(currentBeat);
+          for(Note n : notes) {
+            p.getInst().playNote(n);
+          }
         }
-      }
       maxTime = max(p.time, maxTime);
     }
     if(time > (maxTime + 1) * patternDuration) {
@@ -138,6 +134,15 @@ class Sequencer {
       }
       time = 0;
     }
+    } else {
+      for(Instrument inst : instPage.instruments) {
+        inst.stopAll();
+      }
+    }
+    for(int i = patterns.size() - 1; i >= 0; i --) {
+      if(patterns.get(i).shouldRemove()) patterns.remove(i);
+    }
+    
   }
   
   public void togglePause() {
