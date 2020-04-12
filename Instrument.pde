@@ -10,6 +10,7 @@ class Instrument {
   float volume = 0.5;
   float lowpass = 1;
   float hue = 50;
+  float decayTime;
   
   public final String[] waveformNames = {"SQR", "SIN", "TRI", "SAW"};
   public final int points = 10;
@@ -76,7 +77,8 @@ class Instrument {
     if(lowpass > 0.95) lowpassMsg += " OFF";
     else lowpassMsg += " " + str(floor(getLowPassFreq()));
     lowpass = slider(2, lowpassMsg, lowpass);
-    hue = map(slider(3, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
+    decayTime = slider(3, "Decay Speed " + str((float)floor(2000 * decayTime) / 100), decayTime);
+    hue = map(slider(4, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
     
     // Envelope
     
@@ -127,7 +129,7 @@ class Instrument {
   }
   
   float getVol(float t) {
-    float time = t * 10;
+    float time = t * decayTime * 20;
     int envPoint = floor(time);
     float amp = 0;
     if(envPoint < points) {
@@ -171,7 +173,8 @@ class Instrument {
     result += str(waveform) + ",";
     result += str(volume) + ",";
     result += str(lowpass) + ",";
-    result += str(hue);
+    result += str(hue) + ",";
+    result += str(decayTime);
     return result;
   }
   
@@ -185,6 +188,7 @@ class Instrument {
     volume = float(parts[envelope.length + 2]);
     lowpass = float(parts[envelope.length + 3]);
     hue = float(parts[envelope.length + 4]);
+    decayTime = float(parts[envelope.length + 5]);
   }
   
   void stopAll() {
