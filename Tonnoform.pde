@@ -13,6 +13,7 @@ App app;
 
 ProjectPage projPage;
 InstrumentPage instPage;
+Sequencer sequencer;
 
 float ptime = 0;
 float delta;

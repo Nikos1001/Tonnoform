@@ -12,6 +12,7 @@ class ProjectPage extends UIPage {
     textSize(16);
     text("Save Project", 10, 20);
     text("Load Project", 10, 40);
+    text("Export WAV", 10, 60);
   }
   
   void inspectorClick(float x, float y, float w, float h) {
@@ -20,6 +21,9 @@ class ProjectPage extends UIPage {
     }
     if(y > 20 && y < 40) {
       selectInput("Choose file to open", "openDialog");
+    }
+    if(y > 40 && y < 60) {
+      selectOutput("Choose location to expot", "exportDialog");
     }
   }
   
@@ -33,4 +37,9 @@ void saveDialog(File f) {
 void openDialog(File f) {
   if(f == null) return;
   app.load(f.getAbsolutePath());
+}
+
+void exportDialog(File f) {
+  if(f == null) return;
+  sequencer.export(f.getAbsolutePath());
 }

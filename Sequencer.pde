@@ -5,6 +5,9 @@ class Sequencer {
   MIDIPage midi;
   ArrayList<SequencePattern> patterns;
   
+  AudioRecorder recorder;
+  boolean recording;
+  
   public final int horizPatterns = 10;
   public final int vertPatterns = 5;
   
@@ -17,6 +20,7 @@ class Sequencer {
   Sequencer(MIDIPage midi) {
     this.midi = midi;
     patterns = new ArrayList<SequencePattern>();
+    sequencer = this;
   }
   
   void displayEditor(float w, float h) {
@@ -125,7 +129,15 @@ class Sequencer {
       }
       maxTime = max(p.time, maxTime);
     }
-    if(time > (maxTime + 1) * patternDuration) time = 0;
+    if(time > (maxTime + 1) * patternDuration) {
+      if(recording) {
+        recorder.endRecord();
+        recording = false;
+        recorder.save();
+        app.disableControlls = false;
+      }
+      time = 0;
+    }
   }
   
   public void togglePause() {
@@ -144,6 +156,16 @@ class Sequencer {
       SequencePattern pattern = new SequencePattern(line, midi);
       patterns.add(pattern);
     }
+  }
+  
+  void export(String path) {
+    if(patterns.size() == 0) return;
+    recorder = minim.createRecorder(audioOut, dataPath(path + ".wav"));
+    recorder.beginRecord();
+    time = 0;
+    app.disableControlls = true;
+    recording = true;
+    isPaused = false;
   }
   
 }

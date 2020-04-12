@@ -18,6 +18,8 @@ class App {
   public final color textColor = color(255);
   public final color accentColor = color(255, 232, 137);
   
+  boolean disableControlls = false;
+  
   UIPage[] pages;
   int selectedPage;
   
@@ -86,10 +88,12 @@ class App {
   }
   
   void keyDown() {
+    if(disableControlls) return;
     pages[selectedPage].keyDown();
   }
   
   void click() {
+    if(disableControlls) return;
     if(mouseY < navigationBarHeight) {
       float currentX = 0;
       for(int i = 0; i < pages.length; i ++) {
@@ -112,6 +116,7 @@ class App {
   }
   
   void drag() {
+    if(disableControlls) return;
     if(mouseY > navigationBarHeight) {
       if(pmouseX > width - inspectorWidth && pmouseX < width - inspectorWidth + inspectorDragBar) {
         inspectorWidth = width - mouseX + inspectorDragBar / 2;
