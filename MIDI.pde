@@ -325,7 +325,7 @@ class Pattern {
     
     if(currentNote != null) {
       if(nx >= pivotTime) {
-        currentNote.endTime = nx;
+        currentNote.endTime = nx + 1;
       } else {
         currentNote.startTime = nx;
       }

@@ -166,6 +166,9 @@ class Sequencer {
     app.disableControlls = true;
     recording = true;
     isPaused = false;
+    for(Instrument inst : instPage.instruments) {
+      inst.stopAll();
+    }
   }
   
 }

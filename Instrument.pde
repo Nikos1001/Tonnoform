@@ -187,6 +187,13 @@ class Instrument {
     hue = float(parts[envelope.length + 4]);
   }
   
+  void stopAll() {
+    for(Voice v : voices) {
+      v.delete();
+    }
+    voices = new ArrayList<Voice>();
+  }
+  
 }
 
 
