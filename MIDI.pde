@@ -135,6 +135,7 @@ class MIDIPage extends UIPage {
     if(patterns.size() > 0) {
       patterns.get(selectedPattern).keyDown();
     }
+    if(key == ' ') this.seq.togglePause();
     if(key == 's') scroll ++;
     if(key == 'w') scroll --;
   }
@@ -318,6 +319,10 @@ class Note {
     startTime = st;
     endTime = et;
     note = n;
+  }
+  
+  public String toString() {
+    return "Note " + Integer.toString(this.note);
   }
   
 }

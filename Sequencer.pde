@@ -12,6 +12,8 @@ class Sequencer {
   
   float time;
   
+  boolean isPaused = false;
+  
   Sequencer(MIDIPage midi) {
     this.midi = midi;
     patterns = new ArrayList<SequencePattern>();
@@ -103,6 +105,10 @@ class Sequencer {
   
   void update() {
     time += delta;
+    if (this.isPaused) {
+      time = 0;
+      return; 
+    }
     for(int i = patterns.size() - 1; i >= 0; i --) {
       if(patterns.get(i).shouldRemove()) patterns.remove(i);
     }
@@ -122,6 +128,10 @@ class Sequencer {
       maxTime = max(p.time, maxTime);
     }
     if(time > (maxTime + 1) * patternDuration) time = 0;
+  }
+  
+  public void togglePause() {
+   this.isPaused = !this.isPaused; 
   }
   
 }

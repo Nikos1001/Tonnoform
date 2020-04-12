@@ -1,6 +1,6 @@
 // UI Page
 
-class UIPage {
+abstract class UIPage {
   
   public String name;
 
