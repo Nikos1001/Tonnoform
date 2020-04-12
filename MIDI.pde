@@ -320,4 +320,8 @@ class Note {
     note = n;
   }
   
+  public String toString() {
+    return "Note " + Integer.toString(this.note);
+  }
+  
 }
