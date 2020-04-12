@@ -176,6 +176,7 @@ class Voice {
   Note n;
   
   float lpfFreq;
+  boolean useLpf;
   
   public final Waveform[] waves = {Waves.SQUARE, Waves.SINE, Waves.TRIANGLE, Waves.SAW};
   
@@ -189,6 +190,7 @@ class Voice {
       osc.patch(audioOut);
     } else {
       osc.patch(lpf).patch(audioOut);
+      useLpf = true;
     }
     timer = MIDIPage.beatLength * (n.endTime - n.startTime);
     maxTime = timer;
@@ -203,7 +205,11 @@ class Voice {
   
   void delete() {
     n.playing = false;
-    osc.unpatch(audioOut);
+    if(!useLpf) {
+      osc.unpatch(audioOut);
+    } else {
+      lpf.unpatch(audioOut);
+    }
   }
   
 }
