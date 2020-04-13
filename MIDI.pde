@@ -138,6 +138,7 @@ class MIDIPage extends UIPage {
     if(key == ' ') seq.togglePause();
     if(key == 's') scroll ++;
     if(key == 'w') scroll --;
+    seq.keyDown();
   }
 
   void update() {

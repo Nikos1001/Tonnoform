@@ -12,6 +12,7 @@ class Sequencer {
   public final int vertPatterns = 5;
   
   int selectedInst;
+  int scrollX;
   
   float time;
   
@@ -43,16 +44,22 @@ class Sequencer {
     }
     
     for(SequencePattern p : patterns) {
-      float x = map(p.time, 0, horizPatterns, 0, w);
-      float y = map(p.y, 0, vertPatterns, 0, h - midi.inspectorToolbarHeight);
-      pushMatrix();
-      translate(x, y);
-      p.p.displayIcon(iconWidth, iconHeight, false, p.getColor());
-      popMatrix();
+      if(p.time >= scrollX && p.time < scrollX + horizPatterns) {
+        float x = map(p.time - scrollX, 0, horizPatterns, 0, w);
+        float y = map(p.y, 0, vertPatterns, 0, h - midi.inspectorToolbarHeight);
+        pushMatrix();
+        translate(x, y);
+        p.p.displayIcon(iconWidth, iconHeight, false, p.getColor());
+        popMatrix();
+      }
     }
     
-    fill(app.textColor);
-    rect(iconWidth * time / patternDuration,  0, 2, h - midi.inspectorToolbarHeight);
+    
+    float tx = iconWidth * (time / patternDuration - scrollX);
+    if(tx < w - 1) {
+      fill(app.textColor);
+      rect(tx,  0, 2, h - midi.inspectorToolbarHeight);
+    }
     
     // Toolbar
     pushMatrix();
@@ -74,7 +81,7 @@ class Sequencer {
       float iconWidth = w / horizPatterns;
       float iconHeight = (h - midi.inspectorToolbarHeight) / vertPatterns;
       
-      int mx = floor(x / iconWidth);
+      int mx = floor(x / iconWidth) + scrollX;
       int my = floor(y / iconHeight);
       
       boolean found = false;
@@ -174,6 +181,11 @@ class Sequencer {
     for(Instrument inst : instPage.instruments) {
       inst.stopAll();
     }
+  }
+  
+  void keyDown() {
+    if(keyCode == RIGHT) scrollX ++;
+    if(keyCode == LEFT) scrollX = max(0, scrollX - 1);
   }
   
 }
