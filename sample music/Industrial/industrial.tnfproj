@@ -1,0 +1,50 @@
+===
+9
+Pattern1/0,4,-9/4,8,-10/8,12,-9/12,16,-10/
+Pattern2/0,1,-36/2,3,-33/4,5,-36/8,9,-36/6,7,-29/10,11,-33/12,13,-37/14,15,-29/
+Pattern3/0,4,0/4,8,-5/6,10,-4/8,12,0/12,16,-5/
+Pattern4/0,4,-9/
+Pattern5/0,4,7/
+Pattern6/0,4,0/4,8,0/8,12,-5/10,14,-9/12,16,-12/
+Pattern7/0,4,-17/
+Pattern8/0,4,3/4,8,2/8,16,0/
+Pattern9/0,16,-21/0,16,-17/0,16,-12/
+==
+0,0,Default Instrument,0,0
+1,1,Instrument1,1,1
+0,0,Default Instrument,1,0
+0,0,Default Instrument,2,0
+0,0,Default Instrument,3,0
+1,1,Instrument1,2,1
+1,1,Instrument1,3,1
+0,0,Default Instrument,4,0
+1,1,Instrument1,4,1
+2,2,Instrument2,3,2
+3,2,Instrument2,4,2
+0,0,Default Instrument,5,0
+1,1,Instrument1,5,1
+2,2,Instrument2,5,2
+0,0,Default Instrument,6,0
+1,1,Instrument1,6,1
+4,2,Instrument2,6,2
+1,1,Instrument1,7,1
+1,1,Instrument1,8,1
+0,0,Default Instrument,7,0
+0,0,Default Instrument,8,0
+5,2,Instrument2,7,2
+6,2,Instrument2,8,2
+0,0,Default Instrument,9,0
+0,0,Default Instrument,10,0
+1,1,Instrument1,9,1
+1,1,Instrument1,10,1
+5,2,Instrument2,9,2
+7,2,Instrument2,10,2
+0,0,Default Instrument,11,0
+1,1,Instrument1,11,1
+8,1,Instrument1,12,1
+===
+2
+Default Instrument,1.0,1.0,0.0,0.0,0.6,0.59910715,0.0,0.0,0.19999999,0.19999999,4,0.20810811,1.0,50.000004,1.0,0.1
+Instrument1,1.0,1.0,0.9473214,0.85089284,0.67410713,0.40357143,0.0,0.0,0.0,0.0,3,0.5,1.0,0.0,0.5,0.5
+Instrument2,1.0,0.46785712,0.29642856,0.20267856,0.15982139,0.14374995,0.13303566,0.111607134,0.041964233,0.0,0,1.0,0.3972973,263.67566,0.5,0.5
+===
