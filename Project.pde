@@ -13,6 +13,8 @@ class ProjectPage extends UIPage {
     text("Save Project", 10, 20);
     text("Load Project", 10, 40);
     text("Export WAV", 10, 60);
+    text("Export Instrument Bundle", 10, 80);
+    text("Import Instrument Bundle", 10, 100);
   }
   
   void inspectorClick(float x, float y, float w, float h) {
@@ -24,6 +26,12 @@ class ProjectPage extends UIPage {
     }
     if(y > 40 && y < 60) {
       selectOutput("Choose location to expot", "exportDialog");
+    }
+    if(y > 60 && y <  80) {
+      selectOutput("Choose location to export", "exportInstDialog");
+    }
+    if(y > 80 && y < 100) {
+      selectInput("Choose file to import", "importInstDialog");
     }
   }
   
@@ -42,4 +50,14 @@ void openDialog(File f) {
 void exportDialog(File f) {
   if(f == null) return;
   sequencer.export(f.getAbsolutePath());
+}
+
+void exportInstDialog(File f) {
+  if(f == null) return;
+  instPage.exportBundle(f.getAbsolutePath());
+}
+
+void importInstDialog(File f) {
+  if(f == null) return;
+  instPage.importBundle(f.getAbsolutePath());
 }

@@ -138,4 +138,22 @@ class InstrumentPage extends UIPage {
     }
   }
   
+  void exportBundle(String path) {
+    String[] data = new String[instruments.size()];
+    for(int i = 0; i < instruments.size(); i ++) {
+      data[i] = instruments.get(i).toString();
+    }
+    saveStrings(dataPath(path + ".tnfinsts"), data);
+  }
+  
+  void importBundle(String path) {
+    String[] data = loadStrings(dataPath(path));
+    instruments = new ArrayList<Instrument>();
+    for(int i = 0; i < data.length; i ++) {
+      Instrument inst = new Instrument("");
+      inst.load(data[i]);
+      instruments.add(inst);
+    }
+  }
+  
 }
