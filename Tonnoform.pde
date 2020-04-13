@@ -36,6 +36,7 @@ void draw() {
 }
 
 void keyPressed() {
+  if(key == ESC) key = 0;
   app.keyDown();
 }
 

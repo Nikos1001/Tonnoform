@@ -124,20 +124,20 @@ class Sequencer {
           }
         }
       maxTime = max(p.time, maxTime);
-    }
-    if(time > (maxTime + 1) * patternDuration) {
-      if(recording) {
-        recorder.endRecord();
-        recording = false;
-        recorder.save();
-        app.disableControlls = false;
       }
-      time = 0;
-    }
+      if(time > (maxTime + 1) * patternDuration) {
+        if(recording) {
+          recorder.endRecord();
+          recording = false;
+          recorder.save();
+          app.disableControlls = false;
+        }
+        time = 0;
+      }
     } else {
-      for(Instrument inst : instPage.instruments) {
-        inst.stopAll();
-      }
+      //for(Instrument inst : instPage.instruments) {
+      //  inst.stopAll();
+      //}
     }
     for(int i = patterns.size() - 1; i >= 0; i --) {
       if(patterns.get(i).shouldRemove()) patterns.remove(i);
