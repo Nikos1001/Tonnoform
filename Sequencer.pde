@@ -9,7 +9,7 @@ class Sequencer {
   boolean recording;
   
   public final int horizPatterns = 10;
-  public final int vertPatterns = 5;
+  int vertPatterns = 5;
   
   int selectedInst;
   int scrollX;
@@ -43,6 +43,7 @@ class Sequencer {
       rect(x * iconWidth - 1.5, 0, 3, h - midi.inspectorToolbarHeight);
     }
     
+    int maxY = -1;
     for(SequencePattern p : patterns) {
       if(p.time >= scrollX && p.time < scrollX + horizPatterns) {
         float x = map(p.time - scrollX, 0, horizPatterns, 0, w);
@@ -52,7 +53,9 @@ class Sequencer {
         p.p.displayIcon(iconWidth, iconHeight, false, p.getColor());
         popMatrix();
       }
+      maxY = max(maxY, p.y);
     }
+    vertPatterns = min(max(maxY + 2, 5), 10);
     
     
     float tx = iconWidth * (time / patternDuration - scrollX);
