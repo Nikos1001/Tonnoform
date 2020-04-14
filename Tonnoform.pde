@@ -41,6 +41,10 @@ void keyPressed() {
   app.keyDown();
 }
 
+void keyReleased() {
+  app.keyReleased();
+}
+
 void setAppTitle(String str) {
   println(str);
   frame.setTitle(str);

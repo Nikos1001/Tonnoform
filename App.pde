@@ -20,6 +20,9 @@ class App {
   
   boolean disableControlls = false;
   
+  boolean command;
+  boolean sKey;
+  
   UIPage[] pages;
   int selectedPage;
   
@@ -42,6 +45,7 @@ class App {
     for(UIPage page : pages) {
       page.update();
     }
+    if(command && sKey && filePath.length() > 0) save(filePath);
     
     noStroke();
     background(bgColor);
@@ -86,11 +90,19 @@ class App {
     
     popMatrix();
     
+    
   }
   
   void keyDown() {
     if(disableControlls) return;
     pages[selectedPage].keyDown();
+    if(keyCode == CONTROL) command = true;
+    if(key == 's') sKey = true;
+  }
+  
+  void keyReleased() {
+    if(keyCode == CONTROL) command = false;
+    if(key == 's') sKey = false;
   }
   
   void click() {
@@ -131,6 +143,7 @@ class App {
   }
   
   void save(String path) {
+    println("saving");
     println(path);
     ArrayList<String> data = new ArrayList<String>();
     for(int i = 0; i < pages.length; i ++) {
