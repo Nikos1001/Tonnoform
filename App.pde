@@ -98,7 +98,7 @@ class App {
     pages[selectedPage].keyDown();
     if(keyCode == CONTROL) command = true;
     if(key == 's') sKey = true;
-    
+     
   }
   
   void keyReleased() {
