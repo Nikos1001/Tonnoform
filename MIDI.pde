@@ -379,7 +379,6 @@ class Pattern {
   }
   
   void delete() {
-    for(Note n : notes) n.deleted = true;
   }
   
 }

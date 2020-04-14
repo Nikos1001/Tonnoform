@@ -14,7 +14,7 @@ body {
 
 div#bg-img {
   background: #ffffff;
-  background-image: url(https://raw.githubusercontent.com/Nikos1001/Tonnoform/master/img/homepage-bg.png);
+  background-image: url('../img/homepage-bg.png');
   -moz-filter:blur(5px);
   -o-filter:blur(5px);
   -webkit-filter:blur(5px);
@@ -58,6 +58,9 @@ div#main-content {
 
 large {
   font-size: 24px;
+  display: block;
+  padding-top: 48px;
+  padding-bottom: 10px;
 }
 
 a {
@@ -71,6 +74,9 @@ a {
 img {
   padding-left: 5%;
   width: 85%;
+  display: block;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 iframe {
