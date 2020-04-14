@@ -25,6 +25,7 @@ void setup() {
   size(1000, 600);
   surface.setTitle("Tonnoform");
   surface.setResizable(true);
+  surface.setIcon(loadImage("assets/icon.png"));
   minim = new Minim(this);
   audioOut = minim.getLineOut();
   app = new App();
