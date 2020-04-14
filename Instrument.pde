@@ -13,6 +13,8 @@ class Instrument {
   float decayTime = 0.5;
   float noisePitch = 0.5;
   
+  boolean loopEnvelope;
+  
   public final String[] waveformNames = {"SQR", "SIN", "TRI", "SAW", "NOISE"};
   public final int points = 10;
   
@@ -81,10 +83,13 @@ class Instrument {
       lowpass = slider(2, lowpassMsg, lowpass);
     }
     decayTime = slider(3, "Decay Speed " + str((float)floor(2000 * decayTime) / 100), decayTime);
-    hue = map(slider(4, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
+    hue = map(slider(5, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
     if(waveform == 4) {
       noisePitch = slider(2, "Noise Pitch " + str((float)floor(noisePitch * 100) / 100), noisePitch);
     }
+    
+    String msg = "Loop Envelope " + (loopEnvelope ? "Yes" : "No");
+    loopEnvelope = slider(4, msg, (loopEnvelope ? 1 : 0)) > 0.5;
     
     // Envelope
     
@@ -96,7 +101,11 @@ class Instrument {
     for(int i = 0; i < points; i ++) {
       vertex(map(i, 0, points, 0, w - sliderPanelWidth), map(envelope[i], 0, 1, h / 3, -h / 3));
     }
-    vertex(w - sliderPanelWidth, h / 3);
+    if(!loopEnvelope) {
+      vertex(w - sliderPanelWidth, h / 3);
+    } else {
+      vertex(w - sliderPanelWidth, map(envelope[0], 0, 1, h / 3, -h / 3));
+    }
     endShape();
     
     noStroke();
@@ -137,10 +146,12 @@ class Instrument {
   float getVol(float t) {
     float time = t * decayTime * 20;
     int envPoint = floor(time);
+    if(loopEnvelope) envPoint %= envelope.length;
     float amp = 0;
     if(envPoint < points) {
       float left = envelope[envPoint];
       float right = 0;
+      if(loopEnvelope) right = envelope[0];
       if(envPoint < points - 1) right = envelope[envPoint + 1];
       amp = right * (time % 1) + left * (1 - time % 1);
     }
@@ -181,7 +192,8 @@ class Instrument {
     result += str(lowpass) + ",";
     result += str(hue) + ",";
     result += str(decayTime) + ",";
-    result += str(noisePitch);
+    result += str(noisePitch) + ",";
+    result += (loopEnvelope ? 1 : 0);
     return result;
   }
   
@@ -197,6 +209,7 @@ class Instrument {
     hue = float(parts[envelope.length + 4]);
     decayTime = float(parts[envelope.length + 5]);
     noisePitch = float(parts[envelope.length + 6]);
+    loopEnvelope = float(parts[envelope.length + 7]) > 0.5;
   }
   
   void stopAll() {
@@ -251,7 +264,7 @@ class Voice {
       noise.patch(bitCrush).patch(mult).patch(audioOut);
       mult.setValue(inst.getVol(0));
     }
-    timer = MIDIPage.beatLength * (n.endTime - n.startTime);
+    timer = midiPage.beatLength * (n.endTime - n.startTime);
     maxTime = timer;
   }
   

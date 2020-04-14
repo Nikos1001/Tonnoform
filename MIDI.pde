@@ -5,11 +5,11 @@ class MIDIPage extends UIPage {
   public final float inspectorToolbarHeight = 40;
   public float sequencerHeight = 0;
   
-  public final static int bars = 4, npb = 4;
+  public int bars = 4, npb = 4;
   
   public final int maxPatterns = 15;
   
-  public static final float beatLength = 0.25;
+  public float beatLength = 0.25;
   
   int scroll = 0;
   
@@ -142,8 +142,14 @@ class MIDIPage extends UIPage {
   }
 
   void update() {
+    beatLength = 60.0 / projPage.bpm;
+    bars = projPage.bars;
+    npb = projPage.npb;
     for(int i = 0; i < patterns.size(); i ++) {
       patterns.get(i).index = i;
+      patterns.get(i).bars = bars;
+      patterns.get(i).npb = npb;
+      patterns.get(i).update();
     }
     seq.update();
   }
@@ -201,7 +207,7 @@ class Pattern {
   
   int panY = 0;
   
-  int bars = MIDIPage.bars, npb = MIDIPage.npb;
+  int bars = midiPage.bars, npb = midiPage.npb;
   int shownNotes = 17;
   
   Pattern(String name) {
@@ -224,9 +230,9 @@ class Pattern {
       }
       
       for(Note n : notes) {
-        float x = map(n.startTime, 0, MIDIPage.bars * MIDIPage.npb,0, w);
+        float x = map(n.startTime, 0, midiPage.bars * midiPage.npb,0, w);
         float y = map(n.note, minNote, maxNote, 2 * h / 3,  h / 3);
-        float noteW = map(n.endTime - n.startTime, 0, MIDIPage.bars * MIDIPage.npb, 0, w);
+        float noteW = map(n.endTime - n.startTime, 0, midiPage.bars * midiPage.npb, 0, w);
         rect(x, y, noteW, 2);
       }
     } else {
@@ -361,6 +367,19 @@ class Pattern {
       Note n = new Note(int(values[0]), int(values[1]), int(values[2]));
       notes.add(n);
     }
+  }
+  
+  void update() {
+    int maxBeat = bars * npb;
+    for(int i = notes.size() - 1; i >= 0; i --) {
+      Note n = notes.get(i);
+      n.endTime = min(maxBeat, n.endTime);
+      if(n.startTime > maxBeat) notes.remove(i);
+    }
+  }
+  
+  void delete() {
+    for(Note n : notes) n.deleted = true;
   }
   
 }

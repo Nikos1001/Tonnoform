@@ -92,6 +92,7 @@ class Sequencer {
         if(p.time == mx && p.y == my) {
           found = true;
           if(mouseButton == RIGHT) {
+            p.p.delete();
             patterns.remove(p);
             return;
           }
@@ -144,10 +145,6 @@ class Sequencer {
         }
         time = 0;
       }
-    } else {
-      //for(Instrument inst : instPage.instruments) {
-      //  inst.stopAll();
-      //}
     }
     for(int i = patterns.size() - 1; i >= 0; i --) {
       if(patterns.get(i).shouldRemove()) patterns.remove(i);

@@ -31,7 +31,8 @@ class App {
     pages = new UIPage[3];
     projPage = new ProjectPage();
     pages[0] = projPage;
-    pages[1] = new MIDIPage();
+    midiPage = new MIDIPage();
+    pages[1] = midiPage;
     instPage = new InstrumentPage();
     pages[2] = instPage;
   }

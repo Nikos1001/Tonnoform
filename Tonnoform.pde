@@ -14,6 +14,7 @@ App app;
 ProjectPage projPage;
 InstrumentPage instPage;
 Sequencer sequencer;
+MIDIPage midiPage;
 
 float ptime = 0;
 float delta;
@@ -38,6 +39,11 @@ void draw() {
 void keyPressed() {
   if(key == ESC) key = 0;
   app.keyDown();
+}
+
+void setAppTitle(String str) {
+  println(str);
+  frame.setTitle(str);
 }
 
 void mousePressed() {
