@@ -46,7 +46,7 @@ div#main-content {
   width: 60%;
   margin-left: 20%;
   margin-right: 20%;
-  padding: 20px;
+  padding: 2.5%;
   font-size: 18px;
 }
 
@@ -65,4 +65,9 @@ a {
   font-style: normal;
   display: block;
   text-align: center;
+}
+
+img {
+  padding-left: 5%;
+  width: 85%;
 }
