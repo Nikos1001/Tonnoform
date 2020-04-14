@@ -13,6 +13,7 @@ body {
 }
 
 div#bg-img {
+  background: #ffffff;
   background-image: url("https://raw.githubusercontent.com/Nikos1001/Tonnoform/master/img/homepage-bg.png");
   -moz-filter:blur(5px);
   -o-filter:blur(5px);
