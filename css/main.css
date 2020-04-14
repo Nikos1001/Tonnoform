@@ -1,0 +1,68 @@
+
+
+@font-face {
+  font-family: pixelFont;
+  src: url("../data/assets/font2.ttf");
+}
+
+body {
+  margin: 0;
+  background-color: rgb(60, 60, 60);
+  color: #ffffff;
+  font-family: pixelFont;
+}
+
+div#bg-img {
+  background-image: url("../img/homepage-bg.png");
+  -moz-filter:blur(5px);
+  -o-filter:blur(5px);
+  -webkit-filter:blur(5px);
+  filter:blur(5px);
+  height: 100%;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
+div#main-title {
+  font-size: 96px;
+  width: 100%;
+  text-align: center;
+  padding-top: 10%;
+  padding-bottom: 10%;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+div#main-content {
+  background-color: rgb(32, 32, 32);
+  width: 60%;
+  margin-left: 20%;
+  margin-right: 20%;
+  padding: 20px;
+  font-size: 18px;
+}
+
+.strech-to-bottom {
+  position: fixed;
+  height: 100%;
+}
+
+large {
+  font-size: 24px;
+}
+
+a {
+  color: #ffffff;
+  margin-top: 20px;
+  font-style: normal;
+  display: block;
+  text-align: center;
+}
