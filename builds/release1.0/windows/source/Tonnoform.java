@@ -181,7 +181,7 @@ class App {
     pages[selectedPage].keyDown();
     if(keyCode == CONTROL) command = true;
     if(key == 's') sKey = true;
-    
+     
   }
   
   public void keyReleased() {
@@ -1096,7 +1096,6 @@ class Pattern {
   }
   
   public void delete() {
-    for(Note n : notes) n.deleted = true;
   }
   
 }
