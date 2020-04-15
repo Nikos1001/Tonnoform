@@ -83,3 +83,17 @@ iframe {
   width: 85%;
   padding-left: 5%;
 }
+
+column {
+  width: 25%;
+  display: inline-block;
+}
+
+.preview-img {
+  display: inline;
+  flow: right;
+  width: 25%;
+  padding-left: 0;
+  padding-up: 0;
+  padding-down: 0;
+}
