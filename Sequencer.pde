@@ -18,6 +18,9 @@ class Sequencer {
   
   boolean isPaused = false;
   
+  boolean loopingPattern;
+  int patternID;
+  
   Sequencer(MIDIPage midi) {
     this.midi = midi;
     patterns = new ArrayList<SequencePattern>();
@@ -56,6 +59,13 @@ class Sequencer {
       maxY = max(maxY, p.y);
     }
     vertPatterns = min(max(maxY + 2, 5), 10);
+    
+    for(int x = scrollX; x < scrollX + horizPatterns; x ++) {
+      if(loopingPattern && x != patternID) {
+        fill(0, 0, 0, 100);
+        rect(x * iconWidth, 0, iconWidth, h - midi.inspectorToolbarHeight);
+      }
+    }
     
     
     float tx = iconWidth * (time / patternDuration - scrollX);
@@ -96,6 +106,16 @@ class Sequencer {
             patterns.remove(p);
             return;
           }
+        }
+      }
+      
+      if(app.shift) {
+        if(mouseButton == LEFT) {
+          patternID = mx;
+          loopingPattern = true;
+        }
+        if(mouseButton == RIGHT) {
+          loopingPattern = false;
         }
       }
       
@@ -145,6 +165,10 @@ class Sequencer {
         }
         time = 0;
       }
+      if(loopingPattern) {
+        if(time < patternID * patternDuration) time = patternID * patternDuration;
+        if(time > (patternID + 1) * patternDuration) time = patternID * patternDuration;
+      }
     }
     for(int i = patterns.size() - 1; i >= 0; i --) {
       if(patterns.get(i).shouldRemove()) patterns.remove(i);
@@ -186,6 +210,17 @@ class Sequencer {
   void keyDown() {
     if(keyCode == RIGHT) scrollX ++;
     if(keyCode == LEFT) scrollX = max(0, scrollX - 1);
+    
+    if(key == 'l') {
+      float patternDuration = (midi.beatLength * midi.bars * midi.npb);
+      int currentTime = floor(time / patternDuration);
+      time = (currentTime + 1) * patternDuration;
+    }
+    if(key == 'j') {
+      float patternDuration = (midi.beatLength * midi.bars * midi.npb);
+      int currentTime = floor(time / patternDuration);
+      time = (currentTime - 1) * patternDuration;
+    }
   }
   
 }

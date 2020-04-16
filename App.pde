@@ -20,8 +20,7 @@ class App {
   
   boolean disableControlls = false;
   
-  boolean command;
-  boolean sKey;
+  boolean shift;
   
   UIPage[] pages;
   int selectedPage;
@@ -45,7 +44,6 @@ class App {
     for(UIPage page : pages) {
       page.update();
     }
-    if(command && sKey && filePath.length() > 0) save(filePath);
     
     noStroke();
     background(bgColor);
@@ -96,14 +94,12 @@ class App {
   void keyDown() {
     if(disableControlls) return;
     pages[selectedPage].keyDown();
-    if(keyCode == CONTROL) command = true;
-    if(key == 's') sKey = true;
+    if(keyCode == SHIFT) shift = true;
      
   }
   
   void keyReleased() {
-    if(keyCode == CONTROL) command = false;
-    if(key == 's') sKey = false;
+    if(keyCode == SHIFT) shift = false;
   }
   
   void click() {
