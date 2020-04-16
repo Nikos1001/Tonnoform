@@ -119,7 +119,7 @@ class Sequencer {
         }
       }
       
-      if(!found && mouseButton == LEFT) {
+      if(!found && mouseButton == LEFT && !app.shift) {
         patterns.add(new SequencePattern(midi.patterns.get(midi.selectedPattern), mx, my, selectedInst));
       }
     } else {

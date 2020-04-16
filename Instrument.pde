@@ -13,6 +13,9 @@ class Instrument {
   float decayTime = 0.5;
   float noisePitch = 0.5;
   
+  float vibratoDepth = 0;
+  float vibratoSpeed = 0;
+  
   boolean loopEnvelope;
   
   public final String[] waveformNames = {"SQR", "SIN", "TRI", "SAW", "NOISE"};
@@ -83,13 +86,17 @@ class Instrument {
       lowpass = slider(2, lowpassMsg, lowpass);
     }
     decayTime = slider(3, "Decay Speed " + str((float)floor(2000 * decayTime) / 100), decayTime);
-    hue = map(slider(5, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
+    hue = map(slider(7, "Color", map(hue, 0, 360, 0, 1)), 0, 1, 0, 360);
     if(waveform == 4) {
       noisePitch = slider(2, "Noise Pitch " + str((float)floor(noisePitch * 100) / 100), noisePitch);
     }
     
     String msg = "Loop Envelope " + (loopEnvelope ? "Yes" : "No");
     loopEnvelope = slider(4, msg, (loopEnvelope ? 1 : 0)) > 0.5;
+    
+    msg = "Vibrato " + (vibratoDepth < 0.05 ? "OFF" : str(floor(map(vibratoDepth, 0, 1, 0, 100))) + " hz");
+    vibratoDepth = slider(5, msg, vibratoDepth);
+    vibratoSpeed = slider(6, "Vibrato Speed", vibratoSpeed);
     
     // Envelope
     
@@ -158,6 +165,10 @@ class Instrument {
     return volume * amp;
   }
   
+  float getVibrato(float t) {
+    return sin(t * map(vibratoSpeed, 0, 1, 0, 100)) * vibratoDepth * 100;
+  }
+  
   void drag(float x, float y, float w, float h) {
     for(int i = 0; i < points; i ++) {
       float px = map(i, 0, points, sliderPanelWidth, w);
@@ -193,23 +204,31 @@ class Instrument {
     result += str(hue) + ",";
     result += str(decayTime) + ",";
     result += str(noisePitch) + ",";
-    result += (loopEnvelope ? 1 : 0);
+    result += (loopEnvelope ? 1 : 0) + ",";
+    result += str(vibratoDepth) + ",";
+    result += str(vibratoSpeed) + ",";
     return result;
   }
   
   void load(String data) {
-    String[] parts = data.split(",");
-    name = parts[0];
-    for(int i = 0; i < envelope.length; i ++) {
-      envelope[i] = float(parts[i + 1]);
+    try {
+      String[] parts = data.split(",");
+      name = parts[0];
+      for(int i = 0; i < envelope.length; i ++) {
+        envelope[i] = float(parts[i + 1]);
+      }
+      waveform = int(parts[envelope.length + 1]);
+      volume = float(parts[envelope.length + 2]);
+      lowpass = float(parts[envelope.length + 3]);
+      hue = float(parts[envelope.length + 4]);
+      decayTime = float(parts[envelope.length + 5]);
+      noisePitch = float(parts[envelope.length + 6]);
+      loopEnvelope = float(parts[envelope.length + 7]) > 0.5;
+      vibratoDepth = float(parts[envelope.length + 8]);
+      vibratoSpeed = float(parts[envelope.length + 9]);
+    } catch(Exception e) {
+      
     }
-    waveform = int(parts[envelope.length + 1]);
-    volume = float(parts[envelope.length + 2]);
-    lowpass = float(parts[envelope.length + 3]);
-    hue = float(parts[envelope.length + 4]);
-    decayTime = float(parts[envelope.length + 5]);
-    noisePitch = float(parts[envelope.length + 6]);
-    loopEnvelope = float(parts[envelope.length + 7]) > 0.5;
   }
   
   void stopAll() {
@@ -231,6 +250,7 @@ class Voice {
   float timer;
   float maxTime;
   Note n;
+  float freq;
   
   Noise noise;
   Multiplier mult;
@@ -246,7 +266,8 @@ class Voice {
     this.n = n;
     this.inst = inst;
     if(inst.waveform != 4) {
-      osc = new Oscil(440 * pow(2, (float)n.note / 12), 1, waves[inst.waveform]);
+      freq = 440 * pow(2, (float)n.note / 12);
+      osc = new Oscil(freq, 1, waves[inst.waveform]);
       lpfFreq = inst.getLowPassFreq();
       lpf = new LowPassFS(lpfFreq, audioOut.sampleRate());
       if(inst.lowpass > 0.95) {
@@ -273,6 +294,7 @@ class Voice {
     if(!useNoise) {
       if(inst.waveform != 4) osc.setWaveform(waves[inst.waveform]);
       osc.setAmplitude(inst.getVol(maxTime - timer));
+      osc.setFrequency(freq + inst.getVibrato(timer));
     } else {
       mult.setValue(inst.getVol(maxTime - timer));
     }
